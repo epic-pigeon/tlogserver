@@ -14,12 +14,9 @@ http.createServer((req, res) => {
     } else res.end("");
     function process(data) {
         processData(data).then(str => {
-            console.log("k");
             res.writeHead(200, {"Content-Type": "application/octet-stream"});
             res.end(str);
         }).catch(e => {
-            console.log("err");
-            console.log(e);
             res.writeHead(520, {"Content-Type": "text/plain"});
             res.end(e + "");
         });
@@ -35,10 +32,12 @@ function processData(data) {
             } else {
                 let tlogProcess = childProcess.spawn("mono", ["/var/www/html/nodejs/tlogserver/TLogParserV5.exe", tlogFilename]);
                 let output = "";
+                let stderr = "";
                 tlogProcess.stdout.on("data", data => output += data);
+                tlogProcess.stderr.on("data", data => stderr += data);
                 tlogProcess.on("close", (code) => {
                     if (code !== 0) {
-                        reject(new Error(code));
+                        reject(new Error(code + ": " + stderr));
                     } else {
                         console.log("kar");
                         fs.unlink(tlogFilename, err1 => {
