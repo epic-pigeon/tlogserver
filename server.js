@@ -15,7 +15,7 @@ http.createServer((req, res) => {
     function process(data) {
         processData(data).then(readStream => {
             res.writeHead(200, {"Content-Type": "application/octet-stream"});
-            readStream.on("readable", () => readStream.pipe(res));
+            readStream.pipe(res);
             readStream.on("close", () => res.end())
         }).catch(e => {
             res.writeHead(520, {"Content-Type": "text/plain"});
