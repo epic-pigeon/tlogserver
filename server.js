@@ -18,7 +18,8 @@ http.createServer((req, res) => {
             res.writeHead(200, {"Content-Type": "application/octet-stream"});
             res.end(str);
         }).catch(e => {
-            console.log("k");
+            console.log("err");
+            console.log(e);
             res.writeHead(520, {"Content-Type": "text/plain"});
             res.end(e + "");
         });
