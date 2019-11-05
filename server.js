@@ -1,5 +1,5 @@
 const http = require("http");
-const url = require("url");
+//const url = require("url");
 const fs = require("fs");
 const childProcess = require("child_process");
 
@@ -8,7 +8,7 @@ http.createServer((req, res) => {
         let data = "";
         req.on("data", chunk => data += chunk);
         req.on("end", () => {
-            console.log(data);
+            //console.log(data);
             process(data);
         })
     } else res.end("");
@@ -27,6 +27,7 @@ function processData(data) {
     return new Promise((resolve, reject) => {
         let tlogFilename = "./_"+ +Date.now() + ".tlog";
         fs.writeFile(tlogFilename, data, err => {
+            console.log(err);
             if (err) {
                 reject(err);
             } else {
