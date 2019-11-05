@@ -7,10 +7,11 @@ http.createServer((req, res) => {
     if (req.method === "POST") {
         let data = "";
         req.on("data", chunk => data += chunk);
-        req.on("end", () => process(data))
-    } else if (req.method === "GET") {
-        process(url.parse(req.url).query["data"]);
-    }
+        req.on("end", () => {
+            console.log(data);
+            process(data);
+        })
+    } else res.end("");
     function process(data) {
         processData(data).then(str => {
             res.writeHead(200, {"Content-Type": "application/octet-stream"});
