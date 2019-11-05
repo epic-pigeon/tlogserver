@@ -40,9 +40,10 @@ function processData(data) {
                         console.log(code + ": " + stderr);
                         reject(new Error(code + ": " + stderr));
                     } else {
-                        console.log("kar");
+                        console.log(output);
                         fs.unlink(tlogFilename, err1 => {
                             if (err1) {
+                                console.log(err1);
                                 reject(err1);
                             } else {
                                 resolve(output);
