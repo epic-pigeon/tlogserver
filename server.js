@@ -41,6 +41,7 @@ function processData(data) {
                     if (code !== 0) {
                         reject(new Error(output + ""));
                     } else {
+                        console.log("kar");
                         fs.unlink(tlogFilename, err1 => {
                             if (err1) {
                                 reject(err1);
