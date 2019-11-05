@@ -37,6 +37,7 @@ function processData(data) {
                 tlogProcess.stderr.on("data", data => stderr += data);
                 tlogProcess.on("close", (code) => {
                     if (code !== 0) {
+                        console.log(code + ": " + stderr);
                         reject(new Error(code + ": " + stderr));
                     } else {
                         console.log("kar");
