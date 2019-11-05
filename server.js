@@ -14,9 +14,11 @@ http.createServer((req, res) => {
     } else res.end("");
     function process(data) {
         processData(data).then(str => {
+            console.log("k");
             res.writeHead(200, {"Content-Type": "application/octet-stream"});
             res.end(str);
         }).catch(e => {
+            console.log("k");
             res.writeHead(520, {"Content-Type": "text/plain"});
             res.end(e + "");
         });
@@ -27,7 +29,6 @@ function processData(data) {
     return new Promise((resolve, reject) => {
         let tlogFilename = "./_"+ +Date.now() + ".tlog";
         fs.writeFile(tlogFilename, data, err => {
-            console.log(err);
             if (err) {
                 reject(err);
             } else {
