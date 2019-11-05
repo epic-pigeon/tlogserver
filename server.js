@@ -13,9 +13,10 @@ http.createServer((req, res) => {
         })
     } else res.end("");
     function process(data) {
-        processData(data).then(str => {
+        processData(data).then(readStream => {
             res.writeHead(200, {"Content-Type": "application/octet-stream"});
-            res.end(str);
+            readStream.on("readable", () => res.write(readStream.read()));
+            readStream.on("close", () => res.end())
         }).catch(e => {
             res.writeHead(520, {"Content-Type": "text/plain"});
             res.end(e + "");
@@ -30,25 +31,25 @@ function processData(data) {
             if (err) {
                 reject(err);
             } else {
-                let tlogProcess = childProcess.spawn("mono", ["/var/www/html/nodejs/tlogserver/TLogReaderV5.exe", tlogFilename]);
-                let output = "";
+                let resultFilename = "./_"+ +Date.now() + ".txt";
+                let tlogProcess = childProcess.spawn("mono", ["/var/www/html/nodejs/tlogserver/TLogReaderV5.exe", tlogFilename, resultFilename]);
                 let stderr = "";
-                tlogProcess.stdout.on("data", data => output += data);
                 tlogProcess.stderr.on("data", data => stderr += data);
                 tlogProcess.on("close", (code) => {
                     if (code !== 0) {
                         console.log(code + ": " + stderr);
                         reject(new Error(code + ": " + stderr));
                     } else {
-                        console.log(output);
-                        fs.unlink(tlogFilename, err1 => {
+                        let readStream = fs.createReadStream(resultFilename);
+                        //readStream.on("close", () => fs.unlink(resultFilename, () => {}));
+                        /*fs.unlink(tlogFilename, err1 => {
                             if (err1) {
                                 console.log(err1);
                                 reject(err1);
-                            } else {
-                                resolve(output);
-                            }
-                        });
+                            } else {*/
+                                resolve(readStream);
+                            /*}
+                        });*/
                     }
                 });
             }
