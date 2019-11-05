@@ -13,14 +13,14 @@ http.createServer((req, res) => {
     }
     function process(data) {
         processData(data).then(readStream => {
-            res.writeHead(200);
+            res.writeHead(200, {"Content-Type": "application/octet-stream"});
             readStream.on("readable", () => {
-                res.send(readStream.read());
+                res.write(readStream.read());
                 readStream.on("end", () => res.end());
             });
         }).catch(e => {
-            res.writeHead(520);
-            res.send(e + "");
+            res.writeHead(520, {"Content-Type": "text/plain"});
+            res.end(e + "");
         });
     }
 }).listen(8080);
