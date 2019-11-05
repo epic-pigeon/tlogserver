@@ -33,7 +33,7 @@ function processData(data) {
                 reject(err);
             } else {
                 let resultFilename = "./_"+ +Date.now() + ".txt";
-                let tlogProcess = childProcess.spawn("mono", ["./TLogParserV5.exe", tlogFilename]);
+                let tlogProcess = childProcess.spawn("mono", ["TLogParserV5.exe", tlogFilename]);
                 let output = null;
                 tlogProcess.stderr.on("data", data => (output === null) ? output = data : output += data);
                 tlogProcess.stdout.on("data", data => (output === null) ? output = data : output += data);
