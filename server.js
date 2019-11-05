@@ -29,7 +29,7 @@ function processData(data) {
             if (err) {
                 reject(err);
             } else {
-                let tlogProcess = childProcess.spawn("mono", ["/var/www/html/nodejs/tlogserver/TLogParserV5.exe", tlogFilename, resultFilename]);
+                let tlogProcess = childProcess.spawn("mono", ["/var/www/html/nodejs/tlogserver/TLogParserV5.exe", tlogFilename]);
                 let output = "";
                 tlogProcess.stdout.on("data", data => output += data);
                 tlogProcess.on("close", (code) => {
