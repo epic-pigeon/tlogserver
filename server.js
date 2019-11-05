@@ -12,12 +12,9 @@ http.createServer((req, res) => {
         process(url.parse(req.url).query["data"]);
     }
     function process(data) {
-        processData(data).then(readStream => {
+        processData(data).then(str => {
             res.writeHead(200, {"Content-Type": "application/octet-stream"});
-            readStream.on("readable", () => {
-                res.write(readStream.read());
-                readStream.on("end", () => res.end());
-            });
+            res.end(str);
         }).catch(e => {
             res.writeHead(520, {"Content-Type": "text/plain"});
             res.end(e + "");
@@ -32,25 +29,19 @@ function processData(data) {
             if (err) {
                 reject(err);
             } else {
-                let resultFilename = "./_"+ +Date.now() + ".txt";
-                let tlogProcess = childProcess.spawn("mono", ["TLogParserV5.exe", tlogFilename]);
-                let output = null;
-                tlogProcess.stderr.on("data", data => (output === null) ? output = data : output += data);
-                tlogProcess.stdout.on("data", data => (output === null) ? output = data : output += data);
+                let tlogProcess = childProcess.spawn("mono", ["/var/www/html/nodejs/tlogserver/TLogParserV5.exe", tlogFilename, resultFilename]);
+                let output = "";
+                tlogProcess.stdout.on("data", data => output += data);
                 tlogProcess.on("close", (code) => {
                     if (code !== 0) {
-                        reject(new Error(output + ""));
+                        reject(new Error(code));
                     } else {
                         console.log("kar");
                         fs.unlink(tlogFilename, err1 => {
                             if (err1) {
                                 reject(err1);
                             } else {
-                                let readStream = fs.createReadStream(resultFilename);
-                                readStream.on("close", () => fs.unlink(resultFilename, e => {
-                                    if (e) console.log(e);
-                                }));
-                                resolve(readStream);
+                                resolve(output);
                             }
                         });
                     }
