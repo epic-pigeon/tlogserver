@@ -8,9 +8,9 @@ http.createServer((req, res) => {
         let data = "";
         req.on("data", chunk => data += chunk);
         req.on("end", () => {
-            //console.log(data);
+            console.log(data.length);
             process(data);
-        })
+        });
     } else res.end("");
     function process(data) {
         processData(data).then(readStream => {
