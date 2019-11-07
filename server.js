@@ -27,7 +27,7 @@ http.createServer((req, res) => {
 function processData(data) {
     return new Promise((resolve, reject) => {
         let tlogFilename = "./_"+ +Date.now() + ".tlog";
-        fs.writeFile(tlogFilename, data, err => {
+        fs.writeFile(tlogFilename, Buffer.from(data, "base64"), err => {
             if (err) {
                 reject(err);
             } else {
